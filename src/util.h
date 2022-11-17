@@ -17,5 +17,5 @@ namespace easynet
         noncopyable &operator=(const noncopyable &) = delete;
     };
 
-    uint64_t gettid();
+    pid_t gettid();
 }
