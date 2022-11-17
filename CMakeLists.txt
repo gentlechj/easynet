@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(Threads REQUIRED)
 
 list(APPEND SRCS
+        ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
         ${PROJECT_SOURCE_DIR}/src/util.cpp
         ${PROJECT_SOURCE_DIR}/src/logging.cpp
         )
@@ -26,22 +27,23 @@ option(BUILD_EXAMPLES "Build Examples" OFF)
 
 ## Shared Library
 if (BUILD_SHARED_LIBRARY)
-    add_library(server SHARED ${SRCS})
-    target_include_directories(server PUBLIC ${PROJECT_SOURCE_DIR}/src)
-    target_link_libraries(server ${CMAKE_THREAD_LIBS_INIT})
-    install(TARGETS server DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    add_library(easynet SHARED ${SRCS})
+    target_include_directories(easynet PUBLIC ${PROJECT_SOURCE_DIR}/src)
+    target_link_libraries(easynet ${CMAKE_THREAD_LIBS_INIT})
+    install(TARGETS easynet DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif (BUILD_SHARED_LIBRARY)
 
 # Static library
 if (BUILD_STATIC_LIBRARY)
-    add_library(server_s STATIC ${SRCS})
-    target_include_directories(server_s PUBLIC ${PROJECT_SOURCE_DIR}/src/)
-    target_link_libraries(server_s ${CMAKE_THREAD_LIBS_INIT})
-    install(TARGETS server_s DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    add_library(easynet_s STATIC ${SRCS})
+    target_include_directories(easynet_s PUBLIC ${PROJECT_SOURCE_DIR}/src/)
+    target_link_libraries(easynet_s ${CMAKE_THREAD_LIBS_INIT})
+    install(TARGETS easynet_s DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/logging.h
             ${PROJECT_SOURCE_DIR}/src/util.h
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
@@ -49,11 +51,12 @@ endif (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
 
 function(add_my_executable EXECUTABLE_NAME EXECUTABLE_SOURCES)
     add_executable(${EXECUTABLE_NAME} ${EXECUTABLE_SOURCES})
-    target_link_libraries(${EXECUTABLE_NAME} server_s)
+    target_link_libraries(${EXECUTABLE_NAME} easynet_s)
     target_include_directories(${EXECUTABLE_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/src)
     install(TARGETS ${EXECUTABLE_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
 endfunction(add_my_executable)
 
 if (BUILD_EXAMPLES)
     add_my_executable(logger test/logger.cpp)
+    add_my_executable(eventloop test/eventloop.cpp)
 endif (BUILD_EXAMPLES)
