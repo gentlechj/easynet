@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(Threads REQUIRED)
 
 list(APPEND SRCS
+        ${PROJECT_SOURCE_DIR}/src/channel.cpp
+        ${PROJECT_SOURCE_DIR}/src/poller.cpp
         ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
         ${PROJECT_SOURCE_DIR}/src/util.cpp
         ${PROJECT_SOURCE_DIR}/src/logging.cpp
@@ -43,6 +45,8 @@ endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/channel.h
+            ${PROJECT_SOURCE_DIR}/src/poller.h
             ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/logging.h
             ${PROJECT_SOURCE_DIR}/src/util.h
