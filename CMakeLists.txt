@@ -8,9 +8,12 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(Threads REQUIRED)
 
 list(APPEND SRCS
+        ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
+        ${PROJECT_SOURCE_DIR}/src/timerManager.cpp
+        ${PROJECT_SOURCE_DIR}/src/timer.cpp
+        ${PROJECT_SOURCE_DIR}/src/timerfd.cpp
         ${PROJECT_SOURCE_DIR}/src/channel.cpp
         ${PROJECT_SOURCE_DIR}/src/poller.cpp
-        ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
         ${PROJECT_SOURCE_DIR}/src/util.cpp
         ${PROJECT_SOURCE_DIR}/src/logging.cpp
         )
@@ -45,9 +48,12 @@ endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/eventloop.h
+            ${PROJECT_SOURCE_DIR}/src/timerManager.h
+            ${PROJECT_SOURCE_DIR}/src/timer.h
+            ${PROJECT_SOURCE_DIR}/src/timerfd.h
             ${PROJECT_SOURCE_DIR}/src/channel.h
             ${PROJECT_SOURCE_DIR}/src/poller.h
-            ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/logging.h
             ${PROJECT_SOURCE_DIR}/src/util.h
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
@@ -61,6 +67,7 @@ function(add_my_executable EXECUTABLE_NAME EXECUTABLE_SOURCES)
 endfunction(add_my_executable)
 
 if (BUILD_EXAMPLES)
-    add_my_executable(logger test/logger.cpp)
-    add_my_executable(eventloop test/eventloop.cpp)
+    add_my_executable(test_logger test/test_logger.cpp)
+    add_my_executable(test_loop_timerfd test/test_loop_timerfd.cpp)
+    add_my_executable(test_loop_timer test/test_loop_timer.cpp)
 endif (BUILD_EXAMPLES)
