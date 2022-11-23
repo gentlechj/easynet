@@ -11,10 +11,10 @@ void Poller::poll(int timeoutMs, ChannelList* activeChannels) {
   int numEvents = ::poll(&*m_pollfds.begin(), m_pollfds.size(), timeoutMs);
 
   if (numEvents > 0) {
-    info("%d events happened", numEvents);
+    trace("%d events happened", numEvents);
     fillActiveChannels(numEvents, activeChannels);
   } else if (numEvents == 0) {
-    info("No events happened");
+    trace("No events happened");
   } else {
     error("POLLer::poll() failed");
   }
@@ -37,7 +37,7 @@ void Poller::fillActiveChannels(int numEvents, ChannelList* activeChannels) {
 
 void Poller::updateChannel(Channel* channel) {
   assertInLoopThread();
-  info("fd = %d events = %d", channel->fd(), channel->events());
+  trace("fd = %d events = %d", channel->fd(), channel->events());
   if (channel->index() < 0) {
     // 新channel，添加到poller
     assert(m_channels.find(channel->fd()) == m_channels.end());

@@ -36,6 +36,7 @@ namespace easynet
         "ERROR",
         "WARNING",
         "INFO",
+        "TRACE",
         "ALL",
     };
 
