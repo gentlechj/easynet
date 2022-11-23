@@ -46,8 +46,8 @@ class EventLoop : private noncopyable {
   TimerId runAfter(int64_t delay, const TimerCallback &callback);
   TimerId runEvery(const TimerInterval interval, const TimerCallback &callback);
 
-  void runInloop(const Functor &callback);
-  void queueInloop(const Functor &callback);
+  void runInLoop(const Functor &callback);
+  void queueInLoop(const Functor &callback);
   void wakeup();
 
  private:
@@ -56,7 +56,7 @@ class EventLoop : private noncopyable {
   void abortNotInLoopThread();
 
   void handleRead();  // wakeup
-  int createWakeupFd();
+  void createWakeupFd();
 
   void doPendingFunctors();
 

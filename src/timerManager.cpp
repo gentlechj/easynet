@@ -51,12 +51,12 @@ TimerId TimerManager::addTimer(TimerRepeatedTimes repeatedCount,
                                TimerInterval interval,
                                const TimerCallback &callback) {
   Timer *ptimer = new Timer(repeatedCount, interval, callback);
-  m_loop->runInloop(std::bind(&TimerManager::addTimerInLoop, this, ptimer));
+  m_loop->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, ptimer));
   return ptimer->getId();
 }
 TimerId TimerManager::addTimer(TimeStamp when, const TimerCallback &callback) {
   Timer *ptimer = new Timer(when, callback);
-  m_loop->runInloop(std::bind(&TimerManager::addTimerInLoop, this, ptimer));
+  m_loop->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, ptimer));
   return ptimer->getId();
 }
 bool TimerManager::removeTimer(TimerId timerId) {

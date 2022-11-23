@@ -10,11 +10,11 @@ namespace easynet {
 static thread_local EventLoop *t_loopInThisThread = nullptr;
 const int kPollTimeMs = 10000;
 
-int EventLoop::createWakeupFd() {
+void EventLoop::createWakeupFd() {
   if (::pipe(m_pipeFd) == -1) {
     fatal("Unable to create wakeup fd");
   }
-  return m_pipeFd[0];
+  m_wakeupFd = m_pipeFd[0];
 }
 
 EventLoop::EventLoop()
@@ -28,8 +28,8 @@ EventLoop::EventLoop()
   fatalif(t_loopInThisThread, "Another EventLoop %p exists in this thread %d",
           t_loopInThisThread, m_threadId);
   t_loopInThisThread = this;
-
-  int m_wakeupFd = createWakeupFd();
+  
+  createWakeupFd();
   m_wakeupChannel.reset(new Channel(this, m_wakeupFd));
   m_wakeupChannel->setReadCallback(std::bind(&EventLoop::handleRead, this));
   // we are always reading the wakeupfd
@@ -68,11 +68,11 @@ TimerId EventLoop::runEvery(const TimerInterval interval,
   return m_timerManager->addTimer(-1, interval, callback);
 }
 
-void EventLoop::runInloop(const Functor &callback) {
+void EventLoop::runInLoop(const Functor &callback) {
   if (isInLoopThread()) {
     callback();
   } else {
-    queueInloop(callback);
+    queueInLoop(callback);
   }
 }
 
@@ -92,7 +92,7 @@ void EventLoop::handleRead() {
   }
 }
 
-void EventLoop::queueInloop(const Functor &callback) {
+void EventLoop::queueInLoop(const Functor &callback) {
   {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_pendingFunctors.push_back(callback);
@@ -113,8 +113,8 @@ void EventLoop::doPendingFunctors() {
   }
 
   for (size_t i = 0; i < functors.size(); ++i) {
-    // 这里的functor有可能再调用queueInloop
-    // 此时需要在queueInloop调用wakeup
+    // 这里的functor有可能再调用queueInLoop
+    // 此时需要在queueInLoop调用wakeup
     functors[i]();
   }
 
