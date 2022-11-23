@@ -2,12 +2,14 @@ cmake_minimum_required(VERSION 3.2)
 project(easynet)
 
 set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_FLAGS -DNDEBUG)
 
 #include(GNUInstallDirs)
 
 find_package(Threads REQUIRED)
 
 list(APPEND SRCS
+        ${PROJECT_SOURCE_DIR}/src/eventloopthread.cpp
         ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
         ${PROJECT_SOURCE_DIR}/src/timerManager.cpp
         ${PROJECT_SOURCE_DIR}/src/timer.cpp
@@ -48,6 +50,7 @@ endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/eventloopthread.h
             ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/timerManager.h
             ${PROJECT_SOURCE_DIR}/src/timer.h
@@ -70,4 +73,5 @@ if (BUILD_EXAMPLES)
     add_my_executable(test_logger test/test_logger.cpp)
     add_my_executable(test_loop_timerfd test/test_loop_timerfd.cpp)
     add_my_executable(test_loop_timer test/test_loop_timer.cpp)
+    add_my_executable(test_eventloopthread test/test_eventloopthread.cpp)
 endif (BUILD_EXAMPLES)
