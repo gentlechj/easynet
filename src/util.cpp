@@ -1,5 +1,6 @@
 #include "util.h"
 
+#include <fcntl.h>
 #include <pthread.h>
 #include <string.h>
 #include <sys/syscall.h>
@@ -82,4 +83,10 @@ int64_t nowMicroseconds() {
              p.time_since_epoch())
       .count();
 }
+
+int addFdFlag(int fd, int flag) {
+  int ret = fcntl(fd, F_GETFD);
+  return fcntl(fd, F_SETFD, ret | flag);
+}
+
 }  // namespace easynet
