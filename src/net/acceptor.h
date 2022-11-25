@@ -4,7 +4,7 @@
 #include "channel.h"
 #include "socket.h"
 #include "util.h"
-#include "Ip4Addr.h"
+#include "inetaddress.h"
 
 namespace easynet {
 class Ip4Addr;

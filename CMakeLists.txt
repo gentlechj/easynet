@@ -11,7 +11,7 @@ find_package(Threads REQUIRED)
 list(APPEND SRCS
         ${PROJECT_SOURCE_DIR}/src/net/socket.cpp
         ${PROJECT_SOURCE_DIR}/src/net/netutil.cpp
-        ${PROJECT_SOURCE_DIR}/src/net/ip4addr.cpp
+        ${PROJECT_SOURCE_DIR}/src/net/inetaddress.cpp
         ${PROJECT_SOURCE_DIR}/src/net/acceptor.cpp
         
         ${PROJECT_SOURCE_DIR}/src/eventloopthread.cpp
@@ -59,6 +59,11 @@ endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/net/socket.h
+            ${PROJECT_SOURCE_DIR}/src/net/netutil.h
+            ${PROJECT_SOURCE_DIR}/src/net/inetaddress.h
+            ${PROJECT_SOURCE_DIR}/src/net/acceptor.h
+
             ${PROJECT_SOURCE_DIR}/src/eventloopthread.h
             ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/timerManager.h

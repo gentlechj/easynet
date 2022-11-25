@@ -1,7 +1,7 @@
 
 #include "socket.h"
 
-#include "Ip4Addr.h"
+#include "inetaddress.h"
 #include "netutil.h"
 #include <string.h>
 

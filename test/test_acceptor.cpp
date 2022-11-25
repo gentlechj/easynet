@@ -2,7 +2,7 @@
 
 #include "acceptor.h"
 #include "eventloop.h"
-#include "ip4addr.h"
+#include "inetaddress.h"
 #include "netutil.h"
 
 using namespace easynet;

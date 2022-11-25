@@ -1,4 +1,4 @@
-#include "ip4addr.h"
+#include "inetaddress.h"
 
 #include <strings.h>
 
