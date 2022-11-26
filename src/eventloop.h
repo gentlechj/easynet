@@ -40,6 +40,8 @@ class EventLoop : private noncopyable {
 
   void quit();
   void updateChannel(Channel *channel);
+  void removeChannel(Channel *channel);
+
   static EventLoop *getEventLoopOfCurrentThread();
 
   TimerId runAt(const TimeStamp time, const TimerCallback &callback);

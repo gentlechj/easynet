@@ -28,7 +28,7 @@ EventLoop::EventLoop()
   fatalif(t_loopInThisThread, "Another EventLoop %p exists in this thread %d",
           t_loopInThisThread, m_threadId);
   t_loopInThisThread = this;
-  
+
   createWakeupFd();
   m_wakeupChannel.reset(new Channel(this, m_wakeupFd));
   m_wakeupChannel->setReadCallback(std::bind(&EventLoop::handleRead, this));
@@ -158,4 +158,11 @@ void EventLoop::updateChannel(Channel *channel) {
   // EventLoop不用管poller如何管理channel
   m_poller->updateChannel(channel);
 }
+
+void EventLoop::removeChannel(Channel *channel) {
+  assert(channel->ownerLoop() == this);
+  assertInLoopThread();
+  m_poller->removeChannel(channel);
+}
+
 }  // namespace easynet

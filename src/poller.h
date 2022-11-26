@@ -25,6 +25,9 @@ class Poller : private noncopyable {
 
   // 改变Channel感兴趣的IO事件
   void updateChannel(Channel* channel);
+  
+  // 移除channel
+  void removeChannel(Channel* channel);
 
   void assertInLoopThread() { m_loop->assertInLoopThread(); };
 
