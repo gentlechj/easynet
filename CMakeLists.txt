@@ -13,6 +13,9 @@ list(APPEND SRCS
         ${PROJECT_SOURCE_DIR}/src/net/netutil.cpp
         ${PROJECT_SOURCE_DIR}/src/net/inetaddress.cpp
         ${PROJECT_SOURCE_DIR}/src/net/acceptor.cpp
+        ${PROJECT_SOURCE_DIR}/src/net/tcpconnection.cpp
+        ${PROJECT_SOURCE_DIR}/src/net/tcpserver.cpp
+        ${PROJECT_SOURCE_DIR}/src/net/acceptor.cpp
         
         ${PROJECT_SOURCE_DIR}/src/eventloopthread.cpp
         ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
@@ -63,6 +66,9 @@ if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
             ${PROJECT_SOURCE_DIR}/src/net/netutil.h
             ${PROJECT_SOURCE_DIR}/src/net/inetaddress.h
             ${PROJECT_SOURCE_DIR}/src/net/acceptor.h
+            ${PROJECT_SOURCE_DIR}/src/net/tcpconnection.h
+            ${PROJECT_SOURCE_DIR}/src/net/tcpserver.h
+            ${PROJECT_SOURCE_DIR}/src/net/callback.h
 
             ${PROJECT_SOURCE_DIR}/src/eventloopthread.h
             ${PROJECT_SOURCE_DIR}/src/eventloop.h
@@ -86,9 +92,10 @@ function(add_my_executable EXECUTABLE_NAME EXECUTABLE_SOURCES)
 endfunction(add_my_executable)
 
 if (BUILD_EXAMPLES)
-    add_my_executable(test_acceptor test/test_acceptor.cpp)
     add_my_executable(test_logger test/test_logger.cpp)
     add_my_executable(test_loop_timerfd test/test_loop_timerfd.cpp)
     add_my_executable(test_loop_timer test/test_loop_timer.cpp)
     add_my_executable(test_eventloopthread test/test_eventloopthread.cpp)
+    add_my_executable(test_acceptor test/test_acceptor.cpp)
+    add_my_executable(test_tcpserver test/test_tcpserver.cpp)
 endif (BUILD_EXAMPLES)
