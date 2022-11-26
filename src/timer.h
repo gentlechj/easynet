@@ -2,12 +2,11 @@
 
 #include <functional>
 #include <mutex>
-
+#include "timestamp.h"
 namespace easynet {
 #define TimerId int64_t
 #define TimerRepeatedTimes int32_t
 #define TimerInterval int64_t
-#define TimeStamp int64_t
 
 typedef std::function<void()> TimerCallback;
 

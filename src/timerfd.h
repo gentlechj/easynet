@@ -1,8 +1,7 @@
 #pragma once
 
-#include <sys/time.h>
-
 #include "util.h"
+#include "timestamp.h"
 namespace easynet {
 
 class TimerFd : private noncopyable {
@@ -10,7 +9,7 @@ class TimerFd : private noncopyable {
   TimerFd();
   ~TimerFd();
   int getFd() const;
-  void setTime(int64_t timeStamp);
+  void setTime(TimeStamp timeStamp);
   void alarm();
   void read();
 

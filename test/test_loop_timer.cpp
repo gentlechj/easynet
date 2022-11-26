@@ -4,6 +4,7 @@
 
 #include "eventLoop.h"
 #include "util.h"
+#include "timestamp.h"
 
 using namespace easynet;
 
@@ -12,11 +13,11 @@ EventLoop* g_loop;
 
 void printTid() {
   printf("pid = %d, tid = %d\n", getpid(), gettid());
-  printf("now %ld\n", time(nullptr));
+  printf("now %s\n", readableTime(time(nullptr)).c_str() );
 }
 
 void print(const char* msg) {
-  printf("msg %ld %s\n", time(nullptr), msg);
+  printf("msg %s %s\n", readableTime(time(nullptr)).c_str(), msg);
   if (++cnt == 20) {
     g_loop->quit();
   }

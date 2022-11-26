@@ -19,6 +19,7 @@ list(APPEND SRCS
         
         ${PROJECT_SOURCE_DIR}/src/eventloopthread.cpp
         ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
+        ${PROJECT_SOURCE_DIR}/src/timestamp.cpp
         ${PROJECT_SOURCE_DIR}/src/timerManager.cpp
         ${PROJECT_SOURCE_DIR}/src/timer.cpp
         ${PROJECT_SOURCE_DIR}/src/timerfd.cpp
@@ -73,6 +74,7 @@ if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
             ${PROJECT_SOURCE_DIR}/src/eventloopthread.h
             ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/timerManager.h
+            ${PROJECT_SOURCE_DIR}/src/timestamp.h
             ${PROJECT_SOURCE_DIR}/src/timer.h
             ${PROJECT_SOURCE_DIR}/src/timerfd.h
             ${PROJECT_SOURCE_DIR}/src/channel.h

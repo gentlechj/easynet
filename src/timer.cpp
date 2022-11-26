@@ -1,8 +1,6 @@
 
 #include "timer.h"
 
-#include <time.h>
-
 #include "util.h"
 
 namespace easynet {

@@ -19,11 +19,5 @@ pid_t gettid();
 
 std::string format(const char *fmt, ...);
 
-std::string readableTime(time_t t);
-
-int64_t now();
-int64_t nowMilliseconds();
-int64_t nowMicroseconds();
-
 int addFdFlag(int fd, int flag);
 }  // namespace easynet

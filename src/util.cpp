@@ -6,9 +6,8 @@
 #include <sys/syscall.h>
 #include <time.h>
 
-#include <chrono>
 #include <memory>
-#include <string>
+
 namespace easynet {
 #ifdef OS_LINUX
 pid_t gettid() { return syscall(SYS_gettid); }
@@ -58,30 +57,6 @@ std::string format(const char *fmt, ...) {
     break;
   }
   return base;
-}
-
-std::string readableTime(time_t t) {
-  struct tm tm1;
-  localtime_r(&t, &tm1);
-  return format("%04d-%02d-%02d %02d:%02d:%02d", tm1.tm_year + 1900,
-                tm1.tm_mon + 1, tm1.tm_mday, tm1.tm_hour, tm1.tm_min,
-                tm1.tm_sec);
-}
-
-int64_t now() { return nowMilliseconds(); }
-int64_t nowMilliseconds() {
-  std::chrono::time_point<std::chrono::system_clock> p =
-      std::chrono::system_clock::now();
-  return std::chrono::duration_cast<std::chrono::milliseconds>(
-             p.time_since_epoch())
-      .count();
-}
-int64_t nowMicroseconds() {
-  std::chrono::time_point<std::chrono::system_clock> p =
-      std::chrono::system_clock::now();
-  return std::chrono::duration_cast<std::chrono::microseconds>(
-             p.time_since_epoch())
-      .count();
 }
 
 int addFdFlag(int fd, int flag) {

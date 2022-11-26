@@ -52,7 +52,7 @@ void TimerFd::read() {
   }
 }
 
-void TimerFd::setTime(int64_t timeStamp) {
+void TimerFd::setTime(TimeStamp timeStamp) {
   auto timeout = std::chrono::duration<int>(timeStamp - now());
   auto timeoutMs = static_cast<int>(timeout.count());
 
