@@ -135,7 +135,7 @@ void EventLoop::loop() {
     m_poller->poll(kPollTimeMs, &m_activeChannels);
     for (auto it = m_activeChannels.begin(); it != m_activeChannels.end();
          ++it) {
-      (*it)->handleEvent();
+      (*it)->handleEvent(now());
     }
     doPendingFunctors();  // handle other things
   }

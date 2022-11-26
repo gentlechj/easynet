@@ -1,20 +1,21 @@
 #pragma once
 #include "functional"
+#include "timestamp.h"
 #include "util.h"
-
 namespace easynet {
 class EventLoop;
 
 class Channel : private noncopyable {
  public:
   typedef std::function<void()> EventCallback;
+  typedef std::function<void(TimeStamp)> ReadEventCallback;
 
   // EventLoop为事件管理器，fd为通道内部的fd
   Channel(EventLoop *loop, int fd);
   ~Channel();
 
-  void handleEvent();
-  void setReadCallback(const EventCallback &cb) { readCallback = cb; }
+  void handleEvent(TimeStamp receiveTime);
+  void setReadCallback(const ReadEventCallback &cb) { readCallback = cb; }
   void setWriteCallback(const EventCallback &cb) { writeCallback = cb; }
   void setErrorCallback(const EventCallback &cb) { errorCallback = cb; }
   void setCloseCallback(const EventCallback &cb) { closeCallback = cb; }
@@ -63,7 +64,8 @@ class Channel : private noncopyable {
   int m_fd;
   int m_events;   // 关心的IO事件
   int m_revents;  // 目前活动的事件，如struct pollfd 的revents
-  EventCallback readCallback, writeCallback, errorCallback, closeCallback;
+  ReadEventCallback readCallback;
+  EventCallback writeCallback, errorCallback, closeCallback;
   bool m_eventHandling;
 };
 }  // namespace easynet

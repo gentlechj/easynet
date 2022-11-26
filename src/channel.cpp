@@ -19,7 +19,7 @@ Channel::Channel(EventLoop* loop, int fd)
 
 Channel::~Channel() { assert(!m_eventHandling); }
 
-void Channel::handleEvent() {
+void Channel::handleEvent(TimeStamp receiveTime) {
   m_eventHandling = true;
 
   if ((m_revents & POLLHUP) && !(m_revents & POLLIN)) {
@@ -33,7 +33,7 @@ void Channel::handleEvent() {
     if (errorCallback) errorCallback();
   }
   if (m_revents & (POLLIN | POLLPRI)) {  // 高优先级可读
-    if (readCallback) readCallback();
+    if (readCallback) readCallback(receiveTime);
   }
   if (m_revents & (POLLOUT)) {
     if (writeCallback) writeCallback();

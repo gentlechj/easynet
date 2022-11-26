@@ -14,6 +14,11 @@ std::string readableTime(time_t t) {
                 tm1.tm_sec);
 }
 
+std::string readableTime(TimeStamp t) {
+  t = t / 1000;
+  return readableTime(time_t(t));
+}
+
 TimeStamp now() { return nowMilliseconds(); }
 TimeStamp nowMilliseconds() {
   std::chrono::time_point<std::chrono::system_clock> p =
