@@ -11,12 +11,13 @@ class Channel : private noncopyable {
 
   // EventLoop为事件管理器，fd为通道内部的fd
   Channel(EventLoop *loop, int fd);
-  ~Channel() = default;
+  ~Channel();
 
   void handleEvent();
   void setReadCallback(const EventCallback &cb) { readCallback = cb; }
   void setWriteCallback(const EventCallback &cb) { writeCallback = cb; }
   void setErrorCallback(const EventCallback &cb) { errorCallback = cb; }
+  void setCloseCallback(const EventCallback &cb) { closeCallback = cb; }
 
   int fd() const { return m_fd; }
 
@@ -42,10 +43,11 @@ class Channel : private noncopyable {
   //     m_events &= ~kWriteEvent;
   //     update();
   //   }
-  //   void disableAll() {
-  //     m_events = kNoneEvent;
-  //     update();
-  //   }
+
+  void disableAll() {
+    m_events = kNoneEvent;
+    update();
+  }
 
   EventLoop *ownerLoop() const { return m_loop; }
 
@@ -61,6 +63,7 @@ class Channel : private noncopyable {
   int m_fd;
   int m_events;   // 关心的IO事件
   int m_revents;  // 目前活动的事件，如struct pollfd 的revents
-  EventCallback readCallback, writeCallback, errorCallback;
+  EventCallback readCallback, writeCallback, errorCallback, closeCallback;
+  bool m_eventHandling;
 };
 }  // namespace easynet
