@@ -19,7 +19,7 @@ class Acceptor : private noncopyable {
     m_newConnectionCallback = cb;
   }
 
-  bool listenging() const { return m_listening; }
+  bool listening() const { return m_listening; }
   void listen();
 
  private:

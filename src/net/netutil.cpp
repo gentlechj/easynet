@@ -69,6 +69,27 @@ void setNonBlockAndCloseOnExec(int sockfd) {
           ret, strerror(ret));
 }
 
+int getSocketError(int sockfd) {
+  int optval;
+  socklen_t optlen = sizeof optval;
+
+  if (::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0) {
+    return errno;
+  } else {
+    return optval;
+  }
+}
+
+struct sockaddr_in getLocalAddr(int sockfd) {
+  struct sockaddr_in localaddr;
+  bzero(&localaddr, sizeof localaddr);
+  socklen_t addrlen = sizeof(localaddr);
+  if (::getsockname(sockfd, (struct sockaddr *)(&localaddr), &addrlen) < 0) {
+    error("sockets::getLocalAddr");
+  }
+  return localaddr;
+}
+
 int createNonBlockSocketFd() {
 #ifdef OS_LINUX
   int sockfd = ::socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC,
