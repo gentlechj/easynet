@@ -9,7 +9,6 @@
 #include "logging.h"
 #include "netutil.h"
 #include "socket.h"
-
 namespace easynet {
 TcpConnection::TcpConnection(EventLoop* loop, const std::string& nameArg,
                              int sockfd, const Ip4Addr& localAddr,
@@ -63,7 +62,8 @@ void TcpConnection::handleRead(TimeStamp receiveTime) {
     handleClose();
   } else {
     errno = savedErrno;
-    error("TcpConnection::handleRead %d", savedErrno);
+    error("TcpConnection::handleRead - [%d] %s", savedErrno,
+          strerror(savedErrno));
     handleError();
   }
 }
@@ -137,7 +137,7 @@ void TcpConnection::sendInLoop(const std::string& message) {
   ssize_t nWrote = 0;
   if (!m_channel->isWriting() && m_outputBuffer.readableBytes() == 0) {
     nWrote = ::write(m_channel->fd(), message.data(), message.size());
-    if (nWrote > 0) {
+    if (nWrote >= 0) {
       if (static_cast<size_t>(nWrote) < message.size()) {
         trace("Pending to write more data");
       }
