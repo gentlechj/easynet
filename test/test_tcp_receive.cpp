@@ -1,5 +1,6 @@
 #include <stdio.h>
 
+#include "buffer.h"
 #include "eventloop.h"
 #include "inetaddress.h"
 #include "logging.h"
@@ -15,9 +16,13 @@ void onConnection(const TcpConnectionPtr& conn) {
   }
 }
 
-void onMessage(const TcpConnectionPtr& conn, const char* data, ssize_t len) {
-  printf("onMessage(): received %zd bytes from connection [%s]\n", len,
-         conn->name().c_str());
+void onMessage(const TcpConnectionPtr& conn, Buffer* buffer,
+               TimeStamp receiveTime) {
+  printf("onMessage(): received %zd bytes from connection [%s] at %s\n",
+         buffer->readableBytes(), conn->name().c_str(),
+         readableTime(receiveTime).c_str());
+
+  printf("onMessage(): [%s]\n", buffer->retrieveAsString().c_str());
 }
 
 int main() {

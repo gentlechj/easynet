@@ -1,10 +1,11 @@
 #pragma once
 #include <memory>
 
+#include "buffer.h"
 #include "callback.h"
 #include "inetaddress.h"
+#include "timestamp.h"
 #include "util.h"
-
 namespace easynet {
 class Channel;
 class EventLoop;
@@ -39,7 +40,7 @@ class TcpConnection : private noncopyable,
   enum StateE { kConnecting, kConnected, kDisconnected };
 
   void setState(StateE state) { m_state = state; }
-  void handleRead();
+  void handleRead(TimeStamp);
   void handleWrite();
   void handleClose();
   void handleError();
@@ -54,6 +55,8 @@ class TcpConnection : private noncopyable,
   ConnectionCallback m_connectionCallback;
   MessageCallback m_messageCallback;
   CloseCallback m_closeCallback;
+
+  Buffer m_inputBuffer;
 };
 
 }  // namespace easynet

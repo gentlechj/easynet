@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(Threads REQUIRED)
 
 list(APPEND SRCS
+        ${PROJECT_SOURCE_DIR}/src/net/buffer.cpp
         ${PROJECT_SOURCE_DIR}/src/net/socket.cpp
         ${PROJECT_SOURCE_DIR}/src/net/netutil.cpp
         ${PROJECT_SOURCE_DIR}/src/net/inetaddress.cpp
@@ -63,6 +64,7 @@ endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/net/buffer.h
             ${PROJECT_SOURCE_DIR}/src/net/socket.h
             ${PROJECT_SOURCE_DIR}/src/net/netutil.h
             ${PROJECT_SOURCE_DIR}/src/net/inetaddress.h
@@ -99,5 +101,5 @@ if (BUILD_EXAMPLES)
     add_my_executable(test_loop_timer test/test_loop_timer.cpp)
     add_my_executable(test_eventloopthread test/test_eventloopthread.cpp)
     add_my_executable(test_acceptor test/test_acceptor.cpp)
-    add_my_executable(test_tcpserver test/test_tcpserver.cpp)
+    add_my_executable(test_tcp_receive test/test_tcp_receive.cpp)
 endif (BUILD_EXAMPLES)
