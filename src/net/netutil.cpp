@@ -164,5 +164,11 @@ void close(int sockfd) {
     error("net::close failed");
   }
 }
+
+void shutdownWrite(int sockfd) {
+  if (::shutdown(sockfd, SHUT_WR) < 0) {
+    error("net::shutdownWrite");
+  }
+}
 }  // namespace net
 }  // namespace easynet

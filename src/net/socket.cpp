@@ -1,9 +1,10 @@
 
 #include "socket.h"
 
+#include <string.h>
+
 #include "inetaddress.h"
 #include "netutil.h"
-#include <string.h>
 
 namespace easynet {
 Socket::~Socket() { net::close(m_socketfd); }
@@ -24,4 +25,6 @@ int Socket::accept(Ip4Addr* peeraddr) {
 }
 
 void Socket::setReuseAddr(bool on) { net::setReuseAddr(m_socketfd); }
+
+void Socket::shutdownWrite() { net::shutdownWrite(m_socketfd); }
 }  // namespace easynet
