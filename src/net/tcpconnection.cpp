@@ -45,7 +45,7 @@ void TcpConnection::connectEstablished() {
 
 void TcpConnection::connectDestroyed() {
   m_loop->assertInLoopThread();
-  assert(m_state == kConnected);
+  assert(m_state == kConnected || m_state == kDisconnecting);
   setState(kDisconnected);
   m_channel->disableAll();
   m_connectionCallback(shared_from_this());
@@ -68,13 +68,35 @@ void TcpConnection::handleRead(TimeStamp receiveTime) {
   }
 }
 void TcpConnection::handleWrite() {
-  // TODO
+  m_loop->assertInLoopThread();
+  if (m_channel->isWriting()) {
+    // TODO use writev?
+    ssize_t n = ::write(m_channel->fd(), m_outputBuffer.peek(),
+                        m_outputBuffer.readableBytes());
+    if (n > 0) {
+      m_outputBuffer.retrieve(n);
+      if (m_outputBuffer.readableBytes() == 0) {
+        // 停止观察writable事件
+        m_channel->disableWrite();
+        // 当连接正在关闭的时候，继续执行关闭过程
+        if (m_state == kDisconnecting) {
+          shutdownInLoop();
+        }
+      } else {
+        trace("Pending to write more data");
+      }
+    } else {
+      error("TcpConnection::handleWrite");
+    }
+  } else {
+    trace("TcpConnection is down, no more writing");
+  }
 }
 
 void TcpConnection::handleClose() {
   m_loop->assertInLoopThread();
   trace("TcpConnection::handleClose state = %d", m_state);
-  assert(m_state == kConnected);
+  assert(m_state == kConnected || m_state == kDisconnecting);
   // 不关闭fd，使用析构函数进行关闭，RAII
   m_channel->disableAll();
   m_closeCallback(shared_from_this());
@@ -86,4 +108,54 @@ void TcpConnection::handleError() {
         err, strerror(err));
 }
 
+void TcpConnection::shutdown() {
+  if (m_state == kConnected) {
+    setState(kDisconnecting);
+    m_loop->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
+  }
+}
+
+void TcpConnection::shutdownInLoop() {
+  m_loop->assertInLoopThread();
+  if (!m_channel->isWriting()) {
+    m_socket->shutdownWrite();
+  }
+}
+
+void TcpConnection::send(const std::string& message) {
+  if (m_state == kConnected) {
+    if (m_loop->isInLoopThread()) {
+      sendInLoop(message);
+    } else {
+      m_loop->runInLoop(std::bind(&TcpConnection::sendInLoop, this, message));
+    }
+  }
+}
+
+void TcpConnection::sendInLoop(const std::string& message) {
+  m_loop->assertInLoopThread();
+  ssize_t nWrote = 0;
+  if (!m_channel->isWriting() && m_outputBuffer.readableBytes() == 0) {
+    nWrote = ::write(m_channel->fd(), message.data(), message.size());
+    if (nWrote > 0) {
+      if (static_cast<size_t>(nWrote) < message.size()) {
+        trace("Pending to write more data");
+      }
+    } else {
+      nWrote = 0;
+      if (errno != EWOULDBLOCK) {
+        error("TcpConnection::sendInLoop");
+      }
+    }
+  }
+
+  assert(nWrote >= 0);
+  if (static_cast<size_t>(nWrote) < message.size()) {
+    m_outputBuffer.append(message.data() + nWrote, message.size() - nWrote);
+    // 观察writable事件，然后发送数据
+    if (!m_channel->isWriting()) {
+      m_channel->enableWrite();
+    }
+  }
+}
 }  // namespace easynet

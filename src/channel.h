@@ -36,20 +36,21 @@ class Channel : private noncopyable {
     update();
   }
 
-  //   void enableWrite() {
-  //     m_events |= kWriteEvent;
-  //     update();
-  //   }
-  //   void disableWrite() {
-  //     m_events &= ~kWriteEvent;
-  //     update();
-  //   }
+  void enableWrite() {
+    m_events |= kWriteEvent;
+    update();
+  }
+  void disableWrite() {
+    m_events &= ~kWriteEvent;
+    update();
+  }
 
   void disableAll() {
     m_events = kNoneEvent;
     update();
   }
 
+  bool isWriting() const { return m_events & kWriteEvent; }
   EventLoop *ownerLoop() const { return m_loop; }
 
  private:

@@ -35,16 +35,22 @@ class TcpConnection : private noncopyable,
   // 当被移除的时候调用
   void connectDestroyed();
 
+  void send(const std::string& message);
+  void shutdown();
+
  private:
   // 没有发起连接的功能，初始状态是kConnecting
-  enum StateE { kConnecting, kConnected, kDisconnected };
+  enum StateE { kConnecting, kConnected, kDisconnecting, kDisconnected };
 
   void setState(StateE state) { m_state = state; }
   void handleRead(TimeStamp);
   void handleWrite();
   void handleClose();
   void handleError();
+  void sendInLoop(const std::string& message);
+  void shutdownInLoop();
 
+ private:
   EventLoop* m_loop;
   std::string m_name;
   StateE m_state;
@@ -57,6 +63,7 @@ class TcpConnection : private noncopyable,
   CloseCallback m_closeCallback;
 
   Buffer m_inputBuffer;
+  Buffer m_outputBuffer;
 };
 
 }  // namespace easynet
