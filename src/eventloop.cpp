@@ -5,10 +5,12 @@
 #include "channel.h"
 #include "logging.h"
 #include "poller.h"
+
 namespace easynet {
 
 static thread_local EventLoop *t_loopInThisThread = nullptr;
 const int kPollTimeMs = 10000;
+IgnoreSigPipe ignoreSigPipe;
 
 void EventLoop::createWakeupFd() {
   if (::pipe(m_pipeFd) == -1) {

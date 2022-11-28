@@ -20,4 +20,9 @@ pid_t gettid();
 std::string format(const char *fmt, ...);
 
 int addFdFlag(int fd, int flag);
+
+class IgnoreSigPipe {
+ public:
+  IgnoreSigPipe() { ::signal(SIGPIPE, SIG_IGN); }
+};
 }  // namespace easynet
