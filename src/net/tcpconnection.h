@@ -37,6 +37,7 @@ class TcpConnection : private noncopyable,
 
   void send(const std::string& message);
   void shutdown();
+  void setTcpNoDelay(bool on);
 
  private:
   // 没有发起连接的功能，初始状态是kConnecting

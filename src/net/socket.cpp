@@ -24,7 +24,10 @@ int Socket::accept(Ip4Addr* peeraddr) {
   return connfd;
 }
 
-void Socket::setReuseAddr(bool on) { net::setReuseAddr(m_socketfd); }
+void Socket::setReuseAddr(bool on) { net::setReuseAddr(m_socketfd, on); }
+void Socket::setTcpNoDelay(bool on) { net::setTcpNoDelay(m_socketfd, on); }
+void Socket::setReusePort(bool on) { net::setReusePort(m_socketfd, on); }
+void Socket::setNonBlock(bool on) { net::setNonBlock(m_socketfd, on); }
 
 void Socket::shutdownWrite() { net::shutdownWrite(m_socketfd); }
 }  // namespace easynet

@@ -18,7 +18,7 @@ class Socket : private noncopyable {
   void setReuseAddr(bool on = true);
   void setNonBlock(bool on = true);
   void setReusePort(bool on = true);
-  void setNoDelay(bool on = true);
+  void setTcpNoDelay(bool on = true);
   void shutdownWrite();
 
   int fd() const { return m_socketfd; }

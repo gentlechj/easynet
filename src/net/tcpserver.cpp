@@ -46,6 +46,8 @@ void TcpServer::newConnection(int sockfd, const Ip4Addr& peerAddr) {
   conn->setMessageCallback(m_messageCallback);
   conn->setCloseCallback(
       std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
+  // TODO: use ctor arguments
+  //   conn->setTcpNoDelay(true);
   conn->connectEstablished();
 }
 

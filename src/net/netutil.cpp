@@ -50,7 +50,7 @@ int setReusePort(int fd, bool on) {
 #endif
 }
 
-int setNoDelay(int fd, bool on) {
+int setTcpNoDelay(int fd, bool on) {
   int flag = on;
   int len = sizeof(flag);
   return setsockopt(fd, SOL_SOCKET, TCP_NODELAY, &flag, len);

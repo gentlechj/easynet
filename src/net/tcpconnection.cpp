@@ -158,4 +158,6 @@ void TcpConnection::sendInLoop(const std::string& message) {
     }
   }
 }
+
+void TcpConnection::setTcpNoDelay(bool on) { m_socket->setTcpNoDelay(on); }
 }  // namespace easynet

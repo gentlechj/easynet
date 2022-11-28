@@ -42,7 +42,7 @@ int setNonBlock(int fd, bool on = true);
 int setCloExec(int fd, bool on = true);
 int setReuseAddr(int fd, bool on = true);
 int setReusePort(int fd, bool on = true);
-int setNoDelay(int fd, bool on = true);
+int setTcpNoDelay(int fd, bool on = true);
 
 // 获取socket fd相关属性
 int getSocketError(int sockfd);
