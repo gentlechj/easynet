@@ -44,6 +44,8 @@ class TcpConnection : private noncopyable,
   void shutdown();
   void setTcpNoDelay(bool on);
 
+  EventLoop* getLoop() { return m_loop; }
+
  private:
   // 没有发起连接的功能，初始状态是kConnecting
   enum StateE { kConnecting, kConnected, kDisconnecting, kDisconnected };

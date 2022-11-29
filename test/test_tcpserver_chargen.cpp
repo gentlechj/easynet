@@ -32,7 +32,7 @@ void onMessage(const TcpConnectionPtr& conn, Buffer* buf,
   buf->retrieveAll();
 }
 
-int main() {
+int main(int argc, char* argv[]) {
   setloglevel("trace");
   printf("main(): pid = %d\n", getpid());
 
@@ -53,6 +53,9 @@ int main() {
   server.setConnectionCallback(onConnection);
   server.setMessageCallback(onMessage);
   server.setWriteCompleteCallback(onWriteComplete);
+   if (argc > 1) {
+    server.setThreadNum(atoi(argv[1]));
+  }
   server.start();
 
   loop.loop();

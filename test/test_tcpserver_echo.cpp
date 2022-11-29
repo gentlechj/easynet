@@ -3,6 +3,7 @@
 #include "eventLoop.h"
 #include "inetaddress.h"
 #include "tcpserver.h"
+#include "logging.h"
 
 using namespace easynet;
 void onConnection(const TcpConnectionPtr& conn) {
@@ -23,7 +24,8 @@ void onMessage(const TcpConnectionPtr& conn, Buffer* buf,
   conn->send(buf->retrieveAsString());
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+  setloglevel("trace");
   printf("main(): pid = %d\n", getpid());
 
   Ip4Addr listenAddr(3000);
@@ -32,6 +34,9 @@ int main() {
   TcpServer server(&loop, listenAddr);
   server.setConnectionCallback(onConnection);
   server.setMessageCallback(onMessage);
+  if (argc > 1) {
+    server.setThreadNum(atoi(argv[1]));
+  }
   server.start();
 
   loop.loop();

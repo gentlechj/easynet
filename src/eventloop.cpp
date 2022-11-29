@@ -26,7 +26,7 @@ EventLoop::EventLoop()
       m_poller(new Poller(this)),
       m_timerManager(new TimerManager(this)),
       m_callingPendingFunctors(false) {
-  info("EventLoop created %p in thread %d", this, m_threadId);
+  info("EventLoop[%p] created in thread %lx", this, (long)m_threadId);
   fatalif(t_loopInThisThread, "Another EventLoop %p exists in this thread %d",
           t_loopInThisThread, m_threadId);
   t_loopInThisThread = this;

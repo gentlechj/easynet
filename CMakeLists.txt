@@ -18,6 +18,7 @@ list(APPEND SRCS
         ${PROJECT_SOURCE_DIR}/src/net/tcpserver.cpp
         ${PROJECT_SOURCE_DIR}/src/net/acceptor.cpp
         
+        ${PROJECT_SOURCE_DIR}/src/eventloopthreadpool.cpp
         ${PROJECT_SOURCE_DIR}/src/eventloopthread.cpp
         ${PROJECT_SOURCE_DIR}/src/eventloop.cpp
         ${PROJECT_SOURCE_DIR}/src/timestamp.cpp
@@ -73,6 +74,7 @@ if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
             ${PROJECT_SOURCE_DIR}/src/net/tcpserver.h
             ${PROJECT_SOURCE_DIR}/src/net/callback.h
 
+            ${PROJECT_SOURCE_DIR}/src/eventloopthreadpool.h
             ${PROJECT_SOURCE_DIR}/src/eventloopthread.h
             ${PROJECT_SOURCE_DIR}/src/eventloop.h
             ${PROJECT_SOURCE_DIR}/src/timerManager.h
