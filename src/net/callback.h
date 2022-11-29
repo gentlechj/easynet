@@ -12,4 +12,6 @@ typedef std::function<void(const TcpConnectionPtr&)> ConnectionCallback;
 typedef std::function<void(const TcpConnectionPtr&, Buffer* buffer, TimeStamp)>
     MessageCallback;
 typedef std::function<void(const TcpConnectionPtr&)> CloseCallback;
+typedef std::function<void(const TcpConnectionPtr&)> WriteCompleteCallback;
+
 }  // namespace easynet

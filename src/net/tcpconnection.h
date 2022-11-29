@@ -19,17 +19,22 @@ class TcpConnection : private noncopyable,
   ~TcpConnection();
   bool connected() const { return m_state == kConnected; }
 
-  void setConnectionCallback(const ConnectionCallback& cb) {
-    m_connectionCallback = cb;
-  }
-
   const Ip4Addr& peerAddress() const { return m_peerAddr; }
   const Ip4Addr& localAddress() const { return m_localAddr; }
 
+  void setConnectionCallback(const ConnectionCallback& cb) {
+    m_connectionCallback = cb;
+  }
   void setMessageCallback(const MessageCallback& cb) { m_messageCallback = cb; }
 
   void setCloseCallback(const CloseCallback& cb) { m_closeCallback = cb; }
+
+  void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
+    m_writeCompleteCallback = cb;
+  }
+
   std::string name() { return m_name; }
+
   // 当accept一个新连接的时候调用
   void connectEstablished();
   // 当被移除的时候调用
@@ -62,6 +67,7 @@ class TcpConnection : private noncopyable,
   ConnectionCallback m_connectionCallback;
   MessageCallback m_messageCallback;
   CloseCallback m_closeCallback;
+  WriteCompleteCallback m_writeCompleteCallback;
 
   Buffer m_inputBuffer;
   Buffer m_outputBuffer;

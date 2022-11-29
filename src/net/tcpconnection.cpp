@@ -78,6 +78,10 @@ void TcpConnection::handleWrite() {
       if (m_outputBuffer.readableBytes() == 0) {
         // 停止观察writable事件
         m_channel->disableWrite();
+        if (m_writeCompleteCallback) {
+          m_loop->queueInLoop(
+              std::bind(m_writeCompleteCallback, shared_from_this()));
+        }
         // 当连接正在关闭的时候，继续执行关闭过程
         if (m_state == kDisconnecting) {
           shutdownInLoop();
@@ -137,9 +141,14 @@ void TcpConnection::sendInLoop(const std::string& message) {
   ssize_t nWrote = 0;
   if (!m_channel->isWriting() && m_outputBuffer.readableBytes() == 0) {
     nWrote = ::write(m_channel->fd(), message.data(), message.size());
+    trace("TcpConnection::sendInLoop message size %lu bytes, send %zd bytes",
+          message.size(), nWrote);
     if (nWrote >= 0) {
       if (static_cast<size_t>(nWrote) < message.size()) {
         trace("Pending to write more data");
+      } else if (m_writeCompleteCallback) {
+        m_loop->queueInLoop(
+            std::bind(m_writeCompleteCallback, shared_from_this()));
       }
     } else {
       nWrote = 0;

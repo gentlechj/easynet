@@ -44,6 +44,7 @@ void TcpServer::newConnection(int sockfd, const Ip4Addr& peerAddr) {
   m_connections[connName] = conn;
   conn->setConnectionCallback(m_connectionCallback);
   conn->setMessageCallback(m_messageCallback);
+  conn->setWriteCompleteCallback(m_writeCompleteCallback);
   conn->setCloseCallback(
       std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
   // TODO: use ctor arguments

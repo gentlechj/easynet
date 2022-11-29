@@ -3,8 +3,8 @@
 
 #include "callback.h"
 #include "inetaddress.h"
-#include "util.h"
 #include "tcpconnection.h"
+#include "util.h"
 
 namespace easynet {
 class Acceptor;
@@ -22,6 +22,10 @@ class TcpServer : private noncopyable {
 
   void setMessageCallback(const MessageCallback& cb) { m_messageCallback = cb; }
 
+  void setWriteCompleteCallback(const WriteCompleteCallback& cb) {
+    m_writeCompleteCallback = cb;
+  }
+
  private:
   void newConnection(int sockfd, const Ip4Addr& peerAddr);
   void removeConnection(const TcpConnectionPtr& conn);
@@ -33,6 +37,7 @@ class TcpServer : private noncopyable {
   std::unique_ptr<Acceptor> m_acceptor;
   ConnectionCallback m_connectionCallback;
   MessageCallback m_messageCallback;
+  WriteCompleteCallback m_writeCompleteCallback;
   bool m_started;
   int m_nextConnId;
   ConnectionMap m_connections;
