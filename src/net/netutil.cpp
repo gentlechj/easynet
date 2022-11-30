@@ -85,9 +85,19 @@ struct sockaddr_in getLocalAddr(int sockfd) {
   bzero(&localaddr, sizeof localaddr);
   socklen_t addrlen = sizeof(localaddr);
   if (::getsockname(sockfd, (struct sockaddr *)(&localaddr), &addrlen) < 0) {
-    error("sockets::getLocalAddr");
+    error("net::getLocalAddr");
   }
   return localaddr;
+}
+
+struct sockaddr_in getPeerAddr(int sockfd) {
+  struct sockaddr_in peeraddr;
+  bzero(&peeraddr, sizeof peeraddr);
+  socklen_t addrlen = sizeof(peeraddr);
+  if (::getpeername(sockfd, (struct sockaddr *)(&peeraddr), &addrlen) < 0) {
+    error("net::getPeerAddr");
+  }
+  return peeraddr;
 }
 
 int createNonBlockSocketFd() {
@@ -169,6 +179,17 @@ void shutdownWrite(int sockfd) {
   if (::shutdown(sockfd, SHUT_WR) < 0) {
     error("net::shutdownWrite");
   }
+}
+
+int connect(int sockfd, const struct sockaddr_in &addr) {
+  return ::connect(sockfd, (struct sockaddr *)(&addr), sizeof addr);
+}
+
+bool isSelfConnect(int sockfd) {
+  struct sockaddr_in localaddr = getLocalAddr(sockfd);
+  struct sockaddr_in peeraddr = getPeerAddr(sockfd);
+  return localaddr.sin_port == peeraddr.sin_port &&
+         localaddr.sin_addr.s_addr == peeraddr.sin_addr.s_addr;
 }
 }  // namespace net
 }  // namespace easynet

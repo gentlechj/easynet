@@ -47,6 +47,8 @@ int setTcpNoDelay(int fd, bool on = true);
 // 获取socket fd相关属性
 int getSocketError(int sockfd);
 struct sockaddr_in getLocalAddr(int sockfd);
+struct sockaddr_in getPeerAddr(int sockfd);
+bool isSelfConnect(int sockfd);
 
 // socket相关操作
 int createNonBlockSocketFd();
@@ -55,5 +57,6 @@ void listen(int sockfd);
 int accept(int sockfd, struct sockaddr_in *addr);
 void close(int sockfd);
 void shutdownWrite(int sockfd);
+int connect(int sockfd, const struct sockaddr_in &addr);
 }  // namespace net
 }  // namespace easynet
