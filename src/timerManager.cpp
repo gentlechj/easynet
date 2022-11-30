@@ -1,8 +1,9 @@
 #include "timerManager.h"
 
+#include <algorithm>
+
 #include "eventloop.h"
 #include "logging.h"
-
 namespace easynet {
 TimerManager::TimerManager(EventLoop *loop)
     : m_loop(loop), m_timerFdChannel(loop, m_timerFd.getFd()) {
@@ -18,23 +19,39 @@ TimerManager::~TimerManager() {
 
 void TimerManager::handleRead() {
   m_loop->assertInLoopThread();
+  TimeStamp now(easynet::now());
+
   m_timerFd.read();
-  checkAndHandleTimers();
-  if (!m_timers.empty()) {
-    auto nextExpiredTime = (*m_timers.begin())->getExpiredTime();
-    m_timerFd.setTime(nextExpiredTime);
+
+  std::vector<Timer *> expired = getExpiredTimers(now);
+
+  m_callingExpiredTimers = true;
+  m_cancelingTimers.clear();
+  for (auto it = expired.begin(); it != expired.end(); ++it) {
+    (*it)->run();
   }
+  m_callingExpiredTimers = false;
+
+  checkAndReset(expired);
 }
 
 bool TimerManager::insert(Timer *timer) {
   bool earliestChanged = false;
   TimeStamp when = timer->getExpiredTime();
-  auto it = m_timers.begin();
-  if (it == m_timers.end() || when < (*it)->getExpiredTime()) {
+  if (m_timers.size() == 0) {
     earliestChanged = true;
   }
+
   m_timers.push_back(timer);
+  m_activeTimers.push_back(timer->getId());
   m_timers.sort(TimerCompare());
+  m_activeTimers.sort(ActiveTimerCompare());
+
+  if (when < (*m_timers.begin())->getExpiredTime()) {
+    earliestChanged = true;
+  }
+
+  assert(m_timers.size() == m_activeTimers.size());
   return earliestChanged;
 }
 
@@ -54,48 +71,74 @@ TimerId TimerManager::addTimer(TimerRepeatedTimes repeatedCount,
   m_loop->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, ptimer));
   return ptimer->getId();
 }
+
 TimerId TimerManager::addTimer(TimeStamp when, const TimerCallback &callback) {
   Timer *ptimer = new Timer(when, callback);
   m_loop->runInLoop(std::bind(&TimerManager::addTimerInLoop, this, ptimer));
   return ptimer->getId();
 }
-bool TimerManager::removeTimer(TimerId timerId) {
-  for (auto iter = m_timers.begin(); iter != m_timers.end(); ++iter) {
-    if ((*iter)->getId() == timerId) {
-      Timer *ptimer = *iter;
-      m_timers.erase(iter);
-      delete ptimer;
-      return true;
-    }
-  }
-  return false;
+
+void TimerManager::removeTimer(TimerId timerId) {
+  m_loop->runInLoop(std::bind(&TimerManager::removeTimerInLoop, this, timerId));
 }
 
-void TimerManager::checkAndHandleTimers() {
-  // 判断在遍历过程中是否调整了过期时间
-  bool adjusted = false;
-  Timer *deletedTimer = nullptr;
-  for (auto iter = m_timers.begin(); iter != m_timers.end();) {
-    if ((*iter)->isExpired()) {
-      (*iter)->run();
+void TimerManager::removeTimerInLoop(TimerId timerId) {
+  m_loop->assertInLoopThread();
+  assert(m_timers.size() == m_activeTimers.size());
+  auto findByTimerId = [&](Timer *ptimer) {
+    return ptimer->getId() == timerId;
+  };
 
-      if ((*iter)->getRepeatedTimes() == 0) {
-        // 移除timer
-        deletedTimer = *iter;
-        iter = m_timers.erase(iter);
-        delete deletedTimer;
-        continue;
-      } else {
-        adjusted = true;
-        ++iter;
-      }
+  auto activeTimerIt =
+      std::find(m_activeTimers.begin(), m_activeTimers.end(), timerId);
+
+  if (activeTimerIt != m_activeTimers.end()) {
+    auto timerIt =
+        std::find_if(m_timers.begin(), m_timers.end(), findByTimerId);
+    assert(timerIt != m_timers.end());
+    Timer *ptimer = *timerIt;
+    m_timers.erase(timerIt);
+    delete ptimer;
+    m_activeTimers.erase(activeTimerIt);
+  } else if (m_callingExpiredTimers) {
+    m_cancelingTimers.push_back(timerId);
+  }
+  assert(m_timers.size() == m_activeTimers.size());
+}
+
+std::vector<Timer *> TimerManager::getExpiredTimers(TimeStamp now) {
+  assert(m_timers.size() == m_activeTimers.size());
+  std::vector<Timer *> expiredTimers;
+  auto isNotExpired = [&](Timer *ptimer) { return !ptimer->isExpired(now); };
+  // 寻找第一个不过期的timer
+  auto timerIt = std::find_if(m_timers.begin(), m_timers.end(), isNotExpired);
+  assert(timerIt == m_timers.end() || now < (*timerIt)->getExpiredTime());
+  std::copy(m_timers.begin(), timerIt, back_inserter(expiredTimers));
+
+  m_timers.erase(m_timers.begin(), timerIt);
+
+  for (auto pTimer : expiredTimers) {
+    m_activeTimers.remove(pTimer->getId());
+  }
+
+  assert(m_timers.size() == m_activeTimers.size());
+  return expiredTimers;
+}
+
+void TimerManager::checkAndReset(std::vector<Timer *> expiredTimers) {
+  for (auto iter = expiredTimers.begin(); iter != expiredTimers.end(); ++iter) {
+    if ((*iter)->getRepeatedTimes() != 0 &&
+        std::find(m_cancelingTimers.begin(), m_cancelingTimers.end(),
+                  (*iter)->getId()) == m_cancelingTimers.end()) {
+      insert(*iter);
     } else {
-      break;
+      delete *iter;
     }
   }
 
-  if (adjusted) {
-    m_timers.sort(TimerCompare());
+  if (!m_timers.empty()) {
+    auto nextExpiredTime = (*m_timers.begin())->getExpiredTime();
+    m_timerFd.setTime(nextExpiredTime);
   }
 }
 }  // namespace easynet

@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <mutex>
+
 #include "timestamp.h"
 namespace easynet {
 #define TimerId int64_t
@@ -18,10 +19,10 @@ class Timer {
   Timer(TimeStamp time, const TimerCallback& timercallback);
   ~Timer() = default;
 
-  bool isExpired() const;
+  bool isExpired(TimeStamp now) const;
   void run();
 
-  TimerId getId() { return m_id; }
+  TimerId getId() const { return m_id; }
   TimerRepeatedTimes getRepeatedTimes() { return m_repeatedTimes; }
   TimeStamp getExpiredTime() const { return m_expiredTime; }
 

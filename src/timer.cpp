@@ -37,7 +37,7 @@ Timer::Timer(TimeStamp when, const TimerCallback& timercallback)
   m_id = Timer::generateId();
 }
 
-bool Timer::isExpired() const { return now() >= m_expiredTime; }
+bool Timer::isExpired(TimeStamp now) const { return now >= m_expiredTime; }
 
 void Timer::run() {
   m_callback();
