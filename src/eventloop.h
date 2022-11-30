@@ -47,6 +47,7 @@ class EventLoop : private noncopyable {
   TimerId runAt(const TimeStamp time, const TimerCallback &callback);
   TimerId runAfter(int64_t delay, const TimerCallback &callback);
   TimerId runEvery(const TimerInterval interval, const TimerCallback &callback);
+  void cancel(TimerId timerId);
 
   void runInLoop(const Functor &callback);
   void queueInLoop(const Functor &callback);

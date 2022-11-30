@@ -70,6 +70,10 @@ TimerId EventLoop::runEvery(const TimerInterval interval,
   return m_timerManager->addTimer(-1, interval, callback);
 }
 
+void EventLoop::cancel(TimerId timerId) {
+  return m_timerManager->removeTimer(timerId);
+}
+
 void EventLoop::runInLoop(const Functor &callback) {
   if (isInLoopThread()) {
     callback();

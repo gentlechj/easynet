@@ -21,8 +21,7 @@ Connector::Connector(EventLoop* loop, const Ip4Addr& serverAddr)
 }
 Connector::~Connector() {
   trace("Connector dtor[%p]", this);
-  // TODO 处理定时器未过期的时候，connetor被销毁的情况，取消定时器
-  //   m_loop->cancel(timerId_);
+  m_loop->cancel(m_timerId);
   assert(!m_channel);
 }
 
@@ -90,8 +89,7 @@ void Connector::restart() {
 
 void Connector::stop() {
   m_connect = false;
-  // TODO 处理定时器未过期的时候，connetor被销毁的情况，取消定时器
-  //   m_loop->cancel(timerId_);
+  m_loop->cancel(m_timerId);
 }
 
 void Connector::connecting(int sockfd) {
