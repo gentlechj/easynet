@@ -38,16 +38,13 @@ void TimerManager::handleRead() {
 bool TimerManager::insert(Timer *timer) {
   bool earliestChanged = false;
   TimeStamp when = timer->getExpiredTime();
-  if (m_timers.size() == 0) {
-    earliestChanged = true;
-  }
 
   m_timers.push_back(timer);
   m_activeTimers.push_back(timer->getId());
   m_timers.sort(TimerCompare());
   m_activeTimers.sort(ActiveTimerCompare());
 
-  if (when < (*m_timers.begin())->getExpiredTime()) {
+  if (m_timers.size() == 1 || when < (*m_timers.begin())->getExpiredTime()) {
     earliestChanged = true;
   }
 
