@@ -37,6 +37,7 @@ class Connector : private noncopyable {
   void connecting(int sockfd);
   void handleWrite();
   void handleError();
+  void handleClose();
   void retry(int sockfd);
   int removeAndResetChannel();
   void resetChannel();
