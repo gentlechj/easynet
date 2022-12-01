@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(Threads REQUIRED)
 
 list(APPEND SRCS
+        ${PROJECT_SOURCE_DIR}/src/net/tcpclient.cpp
         ${PROJECT_SOURCE_DIR}/src/net/connector.cpp
         ${PROJECT_SOURCE_DIR}/src/net/buffer.cpp
         ${PROJECT_SOURCE_DIR}/src/net/socket.cpp
@@ -66,6 +67,7 @@ endif (BUILD_STATIC_LIBRARY)
 
 if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
     install(FILES
+            ${PROJECT_SOURCE_DIR}/src/net/tcpclient.h
             ${PROJECT_SOURCE_DIR}/src/net/connector.h
             ${PROJECT_SOURCE_DIR}/src/net/buffer.h
             ${PROJECT_SOURCE_DIR}/src/net/socket.h
@@ -110,4 +112,5 @@ if (BUILD_EXAMPLES)
     add_my_executable(test_tcpserver_send test/test_tcpserver_send.cpp)
     add_my_executable(test_tcpserver_chargen test/test_tcpserver_chargen.cpp)
     add_my_executable(test_connector test/test_connector.cpp)
+    add_my_executable(test_tcpclient test/test_tcpclient.cpp)
 endif (BUILD_EXAMPLES)
