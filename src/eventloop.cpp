@@ -3,9 +3,9 @@
 #include <functional>
 
 #include "channel.h"
+#include "epollpoller.h"
 #include "logging.h"
-#include "poller.h"
-
+#include "pollpoller.h"
 namespace easynet {
 
 static thread_local EventLoop *t_loopInThisThread = nullptr;
@@ -23,7 +23,11 @@ EventLoop::EventLoop()
     : m_looping(false),
       m_threadId(gettid()),
       m_quit(false),
-      m_poller(new Poller(this)),
+#ifdef USE_EPOLL
+      m_poller(new EPollPoller(this)),
+#else
+      m_poller(new PollPoller(this)),
+#endif
       m_timerManager(new TimerManager(this)),
       m_callingPendingFunctors(false) {
   info("EventLoop[%p] created in thread %lx", this, (long)m_threadId);

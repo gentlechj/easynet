@@ -28,7 +28,8 @@ list(APPEND SRCS
         ${PROJECT_SOURCE_DIR}/src/timer.cpp
         ${PROJECT_SOURCE_DIR}/src/timerfd.cpp
         ${PROJECT_SOURCE_DIR}/src/channel.cpp
-        ${PROJECT_SOURCE_DIR}/src/poller.cpp
+        ${PROJECT_SOURCE_DIR}/src/pollpoller.cpp
+        ${PROJECT_SOURCE_DIR}/src/epollpoller.cpp
         ${PROJECT_SOURCE_DIR}/src/util.cpp
         ${PROJECT_SOURCE_DIR}/src/logging.cpp
         )
@@ -44,6 +45,14 @@ endif (CMAKE_HOST_APPLE)
 option(BUILD_SHARED_LIBRARY "Build Shared Library" OFF)
 option(BUILD_STATIC_LIBRARY "Build Static Library" ON)
 option(BUILD_EXAMPLES "Build Examples" OFF)
+
+option(BUILD_USE_EPOLL "Use Epoll" ON)
+
+if (BUILD_USE_EPOLL)
+    add_definitions(-DUSE_EPOLL)
+else(BUILD_USE_EPOLL)
+    add_definitions(-DUSE_POLL)
+endif (BUILD_USE_EPOLL)
 
 ## Shared Library
 if (BUILD_SHARED_LIBRARY)
@@ -87,6 +96,8 @@ if (BUILD_SHARED_LIBRARY OR BUILD_STATIC_LIBRARY)
             ${PROJECT_SOURCE_DIR}/src/timerfd.h
             ${PROJECT_SOURCE_DIR}/src/channel.h
             ${PROJECT_SOURCE_DIR}/src/poller.h
+            ${PROJECT_SOURCE_DIR}/src/pollpoller.h
+            ${PROJECT_SOURCE_DIR}/src/epollpoller.h
             ${PROJECT_SOURCE_DIR}/src/logging.h
             ${PROJECT_SOURCE_DIR}/src/util.h
             DESTINATION ${CMAKE_INSTALL_PREFIX}/include)

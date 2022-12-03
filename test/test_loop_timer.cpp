@@ -3,6 +3,7 @@
 #include <functional>
 
 #include "eventLoop.h"
+#include "logging.h"
 #include "timestamp.h"
 #include "util.h"
 
@@ -30,6 +31,7 @@ void cancelSelf() {
 }
 
 int main() {
+  //   setloglevel("trace");
   printTid();
   EventLoop loop;
   g_loop = &loop;

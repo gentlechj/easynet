@@ -30,6 +30,8 @@ class Channel : private noncopyable {
   void setRevents(int revents) { m_revents = revents; }
 
   bool isNoneEvent() const { return m_events == kNoneEvent; }
+  bool readEnabled() const { return m_events & kReadEvent; }
+  bool writeEnabled() const { return m_events & kWriteEvent; }
 
   void enableRead() {
     m_events |= kReadEvent;
@@ -40,6 +42,7 @@ class Channel : private noncopyable {
     m_events |= kWriteEvent;
     update();
   }
+
   void disableWrite() {
     m_events &= ~kWriteEvent;
     update();
