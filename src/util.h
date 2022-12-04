@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unistd.h>
-
+#include <signal.h>
 #include <string>
 namespace easynet {
 struct noncopyable {

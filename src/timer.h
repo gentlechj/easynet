@@ -5,9 +5,9 @@
 
 #include "timestamp.h"
 namespace easynet {
-#define TimerId int64_t
-#define TimerRepeatedTimes int32_t
-#define TimerInterval int64_t
+typedef int64_t TimerId;
+typedef int32_t TimerRepeatedTimes;
+typedef int64_t TimerInterval;
 
 typedef std::function<void()> TimerCallback;
 
