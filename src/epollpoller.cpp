@@ -42,10 +42,10 @@ void EPollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
 
   int numEvents = ::kevent(m_epoll_fd, NULL, 0, m_events.data(),
                            static_cast<int>(m_events.size()), &timeout);
-  long ticks = nowMilliseconds();
+  long ticks = easynet::now();
 
   trace("kevent wait %d return %d errno %d used %lld millsecond", timeoutMs,
-        numEvents, errno, nowMilliseconds() - ticks);
+        numEvents, errno, easynet::now() - ticks);
   fatalif(numEvents == -1 && errno != EINTR, "kevent return error %d %s", errno,
           strerror(errno));
 

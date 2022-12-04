@@ -22,7 +22,7 @@ void timeout(TimeStamp receiveTime) {
 int main() {
 //   setloglevel("trace");
   printf("main(): pid = %d, tid = %d\n", getpid(), gettid());
-  printf("%s started!\n", readableTime(now()).c_str());
+  printf("%s started!\n", readableTime(TimeStamp::now()).c_str());
   EventLoop loop;
   g_loop = &loop;
 

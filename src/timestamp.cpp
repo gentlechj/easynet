@@ -6,6 +6,14 @@
 
 namespace easynet {
 
+TimeStamp TimeStamp::now() {
+  std::chrono::time_point<std::chrono::system_clock> p =
+      std::chrono::system_clock::now();
+  return std::chrono::duration_cast<std::chrono::milliseconds>(
+             p.time_since_epoch())
+      .count();
+}
+
 std::string readableTime(time_t t) {
   struct tm tm1;
   localtime_r(&t, &tm1);
@@ -15,24 +23,11 @@ std::string readableTime(time_t t) {
 }
 
 std::string readableTime(TimeStamp t) {
-  t = t / 1000;
-  return readableTime(time_t(t));
+  std::string pre = readableTime(time_t(t.toSeconds()));
+  const int64_t milliseconds = t.data() % 1000;
+  return format("%s.%lld", pre.c_str(), milliseconds);
 }
 
-TimeStamp now() { return nowMilliseconds(); }
-TimeStamp nowMilliseconds() {
-  std::chrono::time_point<std::chrono::system_clock> p =
-      std::chrono::system_clock::now();
-  return std::chrono::duration_cast<std::chrono::milliseconds>(
-             p.time_since_epoch())
-      .count();
-}
-TimeStamp nowMicroseconds() {
-  std::chrono::time_point<std::chrono::system_clock> p =
-      std::chrono::system_clock::now();
-  return std::chrono::duration_cast<std::chrono::microseconds>(
-             p.time_since_epoch())
-      .count();
-}
+int64_t now() { return TimeStamp::now().data(); }
 
 }  // namespace easynet
