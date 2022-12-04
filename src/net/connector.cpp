@@ -98,7 +98,6 @@ void Connector::connecting(int sockfd) {
   m_channel.reset(new Channel(m_loop, sockfd));
   m_channel->setWriteCallback(std::bind(&Connector::handleWrite, this));
   m_channel->setErrorCallback(std::bind(&Connector::handleError, this));
-  m_channel->setCloseCallback(std::bind(&Connector::handleClose, this));
   m_channel->enableWrite();
 }
 
@@ -112,25 +111,6 @@ int Connector::removeAndResetChannel() {
 }
 
 void Connector::resetChannel() { m_channel.reset(); }
-
-void Connector::handleClose() {
-  trace("Connector::handleClose %d", m_state);
-  // socket fd关闭
-  assert(m_state == kConnecting || m_state == kConnected);
-  // 首先移除channel，关闭socket fd, 避免socket fd泄漏
-  int sockfd = removeAndResetChannel();
-  int err = net::getSocketError(sockfd);
-
-  if (m_state == kConnecting) {
-    if (err) {
-      warn("SO_ERROR = %d %s", err, strerror(err));
-    }
-    retry(sockfd);
-  } else {
-    stop();
-    retry(sockfd);
-  }
-}
 
 void Connector::handleWrite() {
   trace("Connector::handleWrite %d", m_state);
