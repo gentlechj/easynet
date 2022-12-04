@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#include <string>
 #include <utility>
 
 #include "eventloop.h"
@@ -30,9 +31,16 @@ void onMessage(const TcpConnectionPtr& conn, Buffer* buf,
   printf("onMessage(): [%s]\n", buf->retrieveAsString().c_str());
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    setloglevel("trace");
+  std::string host("localhost");
+
+  if (argc == 2) {
+    host = argv[1];
+  }
+
   EventLoop loop;
-  Ip4Addr serverAddr("localhost", 3000);
+  Ip4Addr serverAddr(host.c_str(), 3000);
   TcpClient client(&loop, serverAddr);
 
   client.setConnectionCallback(onConnection);
