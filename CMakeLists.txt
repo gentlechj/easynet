@@ -1,9 +1,24 @@
 cmake_minimum_required(VERSION 3.2)
+
+if (CMAKE_HOST_APPLE)
+    message(STATUS "Platform is APPLE MACOS")
+    set(CMAKE_C_COMPILER "/opt/homebrew/bin/aarch64-apple-darwin21-gcc-12")
+    set(CMAKE_CXX_COMPILER "/opt/homebrew/bin/aarch64-apple-darwin21-g++-12")
+    add_definitions(-DOS_MACOSX)
+elseif (CMAKE_HOST_UNIX)
+    message(STATUS "Platform is LINUX")
+    set(CMAKE_C_COMPILER "/usr/bin/gcc")
+    set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+    add_definitions(-DOS_LINUX)
+else (CMAKE_HOST_APPLE)
+    message(FATAL_ERROR "Platform not supported")
+endif (CMAKE_HOST_APPLE)
+
 project(easynet)
 
 set(CMAKE_CXX_STANDARD 11)
-# set(CMAKE_CXX_FLAGS -DNDEBUG)
 
+# set(CMAKE_CXX_FLAGS -DNDEBUG)
 #include(GNUInstallDirs)
 
 find_package(Threads REQUIRED)
@@ -34,19 +49,14 @@ list(APPEND SRCS
         ${PROJECT_SOURCE_DIR}/src/logging.cpp
         )
 
-if (CMAKE_HOST_APPLE)
-    add_definitions(-DOS_MACOSX)
-elseif (CMAKE_HOST_UNIX)
-    add_definitions(-DOS_LINUX)
-else (CMAKE_HOST_APPLE)
-    message(FATAL_ERROR "Platform not supported")
-endif (CMAKE_HOST_APPLE)
-
 option(BUILD_SHARED_LIBRARY "Build Shared Library" OFF)
 option(BUILD_STATIC_LIBRARY "Build Static Library" ON)
 option(BUILD_EXAMPLES "Build Examples" OFF)
-
 option(BUILD_USE_EPOLL "Use Epoll" ON)
+
+message(STATUS "BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+message(STATUS "BUILD_EXAMPLES: ${BUILD_EXAMPLES}")
+message(STATUS "BUILD_USE_EPOLL: ${BUILD_USE_EPOLL}")
 
 if (BUILD_USE_EPOLL)
     add_definitions(-DUSE_EPOLL)
