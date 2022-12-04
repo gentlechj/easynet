@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "connector.h"
-#include "eventLoop.h"
+#include "eventloop.h"
 
 using namespace easynet;
 EventLoop* g_loop;

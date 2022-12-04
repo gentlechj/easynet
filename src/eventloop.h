@@ -11,6 +11,7 @@
 
 #ifdef OS_LINUX
 #include <sys/epoll.h>
+#include <sys/poll.h>
 #elif defined(OS_MACOSX)
 #include <sys/event.h>
 #include <sys/poll.h>

@@ -1,11 +1,13 @@
 
 #include "timerfd.h"
 
-#include <sys/pipe.h>
 #include <sys/poll.h>
+#include <unistd.h>
 #ifdef OS_LINUX
-#include <sys/timerfd.h
+#include <sys/timerfd.h>
 #endif
+
+#include <strings.h>
 
 #include <thread>
 
@@ -54,7 +56,7 @@ void TimerFd::read() {
 
 void TimerFd::setTime(TimeStamp timeStamp) {
   auto timeout = std::chrono::duration<int>(timeStamp - now());
-  auto timeoutMs = static_cast<int>(timeout.count());
+  auto timeoutMs = static_cast<int64_t>(timeout.count());
 
 #ifdef OS_MACOSX
   std::thread timer([this, timeoutMs]() {
@@ -68,12 +70,16 @@ void TimerFd::setTime(TimeStamp timeStamp) {
   timer.detach();
 #elif defined(OS_LINUX)
   // wake up loop by timerfd_settime()
+  struct timespec ts;
+  ts.tv_sec = static_cast<time_t>(timeoutMs / 1000);
+  ts.tv_nsec = static_cast<long>((timeoutMs % 1000) * 1000 * 1000);
+
   struct itimerspec newValue;
   struct itimerspec oldValue;
   bzero(&newValue, sizeof newValue);
   bzero(&oldValue, sizeof oldValue);
-  newValue.it_value = timeoutMs;
-  int ret = ::timerfd_settime(timerfd, 0, &newValue, &oldValue);
+  newValue.it_value = ts;
+  int ret = ::timerfd_settime(m_timerFd, 0, &newValue, &oldValue);
   if (ret) {
     error("timerfd_settime()");
   }

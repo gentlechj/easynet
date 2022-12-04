@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "eventLoop.h"
+#include "eventloop.h"
 #include "logging.h"
 #include "timestamp.h"
 #include "util.h"

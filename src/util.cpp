@@ -2,10 +2,10 @@
 
 #include <fcntl.h>
 #include <pthread.h>
-#include <string.h>
+#include <strings.h>
 #include <sys/syscall.h>
 #include <time.h>
-
+#include <stdarg.h>
 #include <memory>
 
 namespace easynet {
