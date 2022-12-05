@@ -56,9 +56,9 @@ class TimerManager : private noncopyable {
   TimerList m_timers;
   ActiveTimerList m_activeTimers;
 
+  EventLoop* m_loop;
   TimerFd m_timerFd;
   Channel m_timerFdChannel;
-  EventLoop* m_loop;
 
   // 以下为removeTimer相关
   bool m_callingExpiredTimers;

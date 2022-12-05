@@ -194,10 +194,6 @@ EPollPoller::EPollPoller(EventLoop* loop)
 EPollPoller::~EPollPoller() { ::close(m_epoll_fd); }
 
 void EPollPoller::poll(int timeoutMs, ChannelList* activeChannels) {
-  struct timespec timeout;
-  timeout.tv_sec = timeoutMs / 1000;
-  timeout.tv_nsec = (timeoutMs % 1000) * 1000 * 1000;
-
   int numEvents = ::epoll_wait(m_epoll_fd, m_events.data(),
                                static_cast<int>(m_events.size()), timeoutMs);
 

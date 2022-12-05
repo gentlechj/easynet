@@ -30,7 +30,7 @@ Timer::Timer(TimerRepeatedTimes repeatedTimes, TimerInterval interval,
 }
 
 Timer::Timer(TimeStamp when, const TimerCallback& timercallback)
-    : m_repeatedTimes(0), m_callback(timercallback), m_interval(0) {
+    : m_repeatedTimes(0), m_interval(0), m_callback(timercallback) {
   m_expiredTime = when;
 
   // 生成唯一id

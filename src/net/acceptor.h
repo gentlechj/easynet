@@ -26,10 +26,10 @@ class Acceptor : private noncopyable {
   void handleRead();
 
   EventLoop* m_loop;
+  Ip4Addr m_listenAddr;
   Socket m_acceptSocket;
   Channel m_acceptChannel;
   NewConnectionCallback m_newConnectionCallback;
   bool m_listening;
-  Ip4Addr m_listenAddr;
 };
 }  // namespace easynet

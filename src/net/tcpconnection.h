@@ -63,8 +63,8 @@ class TcpConnection : private noncopyable,
   std::string m_name;
   StateE m_state;
 
-  std::unique_ptr<Channel> m_channel;
   std::unique_ptr<Socket> m_socket;
+  std::unique_ptr<Channel> m_channel;
   Ip4Addr m_localAddr, m_peerAddr;
   ConnectionCallback m_connectionCallback;
   MessageCallback m_messageCallback;

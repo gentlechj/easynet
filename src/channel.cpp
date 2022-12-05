@@ -11,10 +11,10 @@ const int Channel::kWriteEvent = POLLOUT;
 
 Channel::Channel(EventLoop* loop, int fd)
     : m_loop(loop),
+      idx(-1),
       m_fd(fd),
       m_events(0),
       m_revents(0),
-      idx(-1),
       m_eventHandling(false) {}
 
 Channel::~Channel() { assert(!m_eventHandling); }

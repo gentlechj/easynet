@@ -21,8 +21,8 @@ void EventLoop::createWakeupFd() {
 
 EventLoop::EventLoop()
     : m_looping(false),
-      m_threadId(gettid()),
       m_quit(false),
+      m_threadId(gettid()),
 #ifdef USE_EPOLL
       m_poller(new EPollPoller(this)),
 #else

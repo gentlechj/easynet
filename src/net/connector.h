@@ -43,8 +43,8 @@ class Connector : private noncopyable {
   void resetChannel();
 
   EventLoop* m_loop;
-  bool m_connect;
   Ip4Addr m_serverAddr;
+  bool m_connect;
   StateE m_state;
   std::unique_ptr<Channel> m_channel;
   NewConnectionCallback m_newConnectionCallback;

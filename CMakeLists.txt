@@ -23,6 +23,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package(Threads REQUIRED)
 
+set(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "$ENV{CXXFLAGS} -O2 -Wall")
+
 list(APPEND SRCS
         ${PROJECT_SOURCE_DIR}/src/net/tcpclient.cpp
         ${PROJECT_SOURCE_DIR}/src/net/connector.cpp
